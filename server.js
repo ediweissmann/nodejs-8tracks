@@ -23,7 +23,7 @@ app.get('/d/:user/:playlist', function (req, res) {
             console.log("token: " + token + "\n")
 
             request('http://8tracks.com/sets/' + token + '/play?mix_id=' + playlistId + '&format=jsonh', function (error, response, body) {
-                fs.mkdirSync(playlistName, 0777)
+                fs.mkdirSync(downloadPath(playlistName), 0777)
                 downloadTrack(res, playlistId, token, JSON.parse(body)["set"], playlistName)
             })
         })
@@ -31,6 +31,8 @@ app.get('/d/:user/:playlist', function (req, res) {
 })
 
 function toFileName(name) { return name.replace(/[^a-zA-Z \-0-9]+/g, '-') }
+
+function downloadPath(playlistName) { return path.join("playlists", playlistName) }
 
 /**
  * Downloads the current song in the playlist, then, if there are more, downloads more
@@ -42,7 +44,7 @@ var downloadTrack = function (res, playlistId, token, playSet, playlistName) {
     res.write("Track: " + trackName + "\n")
     console.log("Downloading track: " + trackName + " from " + trackUrl + "\n")
 
-    request(trackUrl).pipe(fs.createWriteStream(path.join(playlistName, toFileName(trackName) + ".m4a")))
+    request(trackUrl).pipe(fs.createWriteStream(path.join(downloadPath(playlistName), toFileName(trackName) + ".m4a")))
 
     // get next song
     request('http://8tracks.com/sets/' + token + '/next?mix_id=' + playlistId + '&format=jsonh', function (error, response, body) {
