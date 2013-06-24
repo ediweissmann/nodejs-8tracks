@@ -2,11 +2,11 @@ http = require('http')
 request = require('request')
 fs = require('fs')
 path = require('path')
-express = require('express')
-app = express.createServer()
+express = require("express");
+app = express();
 
 app.get('/', function (req, res) {
-    res.send('Copy the 8tracks playlist url and paste it in your browser as http://localhost:' + app.address().port + '/d/:user/:playlist')
+    res.send('Copy the 8tracks playlist url and paste it in your browser as http://localhost:9000/d/:user/:playlist')
 })
 
 app.get('/d/:user/:playlist', function (req, res) {
@@ -59,7 +59,7 @@ var downloadTrack = function (res, playlistId, token, playSet, playlistName) {
 
 
 app.listen(9000)
-console.log('Express server started on port %s', app.address().port)
+console.log('Express server started in port 9000')
 
 
 
